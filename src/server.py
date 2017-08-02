@@ -1,6 +1,6 @@
 import Pyro4
 import numpy as np
-import logging
+import logging, socket
 from random import random, randint
 
 Pyro4.config.SERIALIZER='pickle'
@@ -21,7 +21,9 @@ class DataFetcher(object):
     return res
 
 def start():
-  daemon = Pyro4.Daemon()
+  hostname = socket.gethostname()
+  logging.debug('Daemon will register objects with hostname %s' % hostname)
+  daemon = Pyro4.Daemon(hostname)
   uri = daemon.register(DataFetcher)
   ns = Pyro4.locateNS()
   ns.register('posada.DataFetcher', uri)
